@@ -11,9 +11,6 @@ router.get('/', function (req, res) {
 
 router.get('/form', function (req, res) {
     res.render('contacts');
-
-
-
 });
 
 router.post('/form', function (req, res) {
