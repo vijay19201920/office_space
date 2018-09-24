@@ -1,4 +1,6 @@
 var express = require('express');
+var passwordHash = require('password-hash');
+
 var router = express.Router();
 
 var connection = require('./db_connection.js');
@@ -14,19 +16,30 @@ router.get('/form', function (req, res) {
 });
 
 router.post('/form', function (req, res) {
-    //console.log(req.body);
+    // console.log(req.body);
+    var hashedPassword;
+    hashedPassword = passwordHash.generate(req.body.password);
+    //console.log( hashedPassword);
 
-    var sql = "INSERT INTO form (name, email , mobile_number , subject , message) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.mobile + "' ,'" + req.body.subject + "' , '" + req.body.message + "')";
-    connection.query(sql, function (err, result) {
+    var uniqueUser = "SELECT *  FROM form WHERE username = '" + req.body.username + "' LIMIT 1";
+    var sql = "INSERT INTO form (name, email , mobile_number , username , password) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.mobile + "' ,'" + req.body.username + "' , '" + hashedPassword + "')";
+
+    connection.query(uniqueUser, function (err, result) {
         if (err)
             throw err;
-        console.log("1 record inserted");
-        res.redirect('/contacts/form');
+        if (result.length > 0) {
+            req.flash('msg', 'This use already exist.')
+            res.redirect('/contacts/form');
+        } else {
+         connection.query(sql, function (err, result) {
+                if (err)
+                    throw err;
+                console.log("1 record inserted");
+                res.redirect('/contacts/form');
+            });
+            console.log("1 record inserted");
+           // res.redirect('/contacts/form');
+        }
     });
-
-
 });
-
-
-
 module.exports = router;

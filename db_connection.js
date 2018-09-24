@@ -10,12 +10,12 @@ var con = mysql.createConnection({
 con.connect(function (err) {
     if (err)
         throw err;
-    console.log("Connected!");
-     var sql = "CREATE TABLE IF NOT EXISTS form(name VARCHAR(255), email VARCHAR(255),mobile_number CHAR(10) , subject VARCHAR(255), message VARCHAR(255) )";
+  //  console.log("Connected!");
+     var sql = "CREATE TABLE IF NOT EXISTS form(name VARCHAR(255), email VARCHAR(255),mobile_number CHAR(10) , username VARCHAR(255) , password VARCHAR(255) )";
     con.query(sql, function (err, result) {
         if (err)
             throw err;
-        console.log("table created");
+     //   console.log("table created");
     });
 
 });
