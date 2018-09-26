@@ -12,15 +12,21 @@ router.get('/', function (req, res) {
 //export this router to use in our index.js
 
 router.get('/form', function (req, res) {
-    res.render('contacts');
+    if (req.session.name) {
+        res.render('contacts', { success: req.session.name });
+    } else {
+        res.render('contacts', { success: req.session.name });
+    }
+    req.session.destroy();
+
 });
 
 router.post('/form', function (req, res) {
-    // console.log(req.body);
+
     var hashedPassword;
     hashedPassword = passwordHash.generate(req.body.password);
-    //console.log( hashedPassword);
 
+    console.log(req.session.check + 'submit session');
     var uniqueUser = "SELECT *  FROM form WHERE username = '" + req.body.username + "' LIMIT 1";
     var sql = "INSERT INTO form (name, email , mobile_number , username , password) VALUES ('" + req.body.name + "', '" + req.body.email + "' , '" + req.body.mobile + "' ,'" + req.body.username + "' , '" + hashedPassword + "')";
 
@@ -28,17 +34,20 @@ router.post('/form', function (req, res) {
         if (err)
             throw err;
         if (result.length > 0) {
-            req.flash('msg', 'This use already exist.')
+            req.session.name = 'This user already exist, please enter unique username to register';
+            // req.flash('msg', 'This use already exist.')
             res.redirect('/contacts/form');
         } else {
-         connection.query(sql, function (err, result) {
+            connection.query(sql, function (err, result) {
                 if (err)
                     throw err;
+                req.session.name = 'success';
                 console.log("1 record inserted");
+
                 res.redirect('/contacts/form');
             });
             console.log("1 record inserted");
-           // res.redirect('/contacts/form');
+            // res.redirect('/contacts/form');
         }
     });
 });
