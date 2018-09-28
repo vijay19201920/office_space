@@ -35,7 +35,7 @@ router.post('/form', function (req, res) {
             if (result.length > 0) {
                 if (passwordHash.verify(req.body.password, result[0].password)) {
                     req.session.message = 'login successfully';
-                    res.redirect('/login/form');
+                    res.redirect('/dash/dashboard');
                 } else {
                     req.session.message = 'please enter correct username and password'
                     res.redirect('/login/form');

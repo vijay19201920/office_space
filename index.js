@@ -10,10 +10,13 @@ var app = express();
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+app.use(express.static(path.join(__dirname , 'public')))
+//app.use(express.static(__dirname + 'public'));
 //app.set('views', path.resolve('./views'))
 app.disable('view cache');
 
-app.use(express.static(path.resolve('app/public')))
+
 
 app.use(session({
     name: 'example',
@@ -24,28 +27,31 @@ app.use(session({
       path: '/',
       httpOnly: true,
       secure: false,
+      maxAge:  4,
       expires: new Date('Monday, 18 January 2028')
     },
   }))
-
-
-
-var contacts = require('./contacts.js');
-var login = require('./login.js');
-
-
+  
 // for parsing application/json
 app.use(bodyParser.json());
 
 // for parsing application/xwww-
 app.use(bodyParser.urlencoded({extended: true}));
-//form-urlencoded
+
+var contacts = require('./contacts.js');
+var login = require('./login.js');
+var dashboard = require('./dashboard.js');
+
+
+
+app.use('/dash', dashboard);
+
+
+
 app.use('/contacts', contacts);
 
 
-// for parsing application/xwww-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+
 app.use('/login', login);
 
 
