@@ -27,7 +27,7 @@ app.use(session({
       path: '/',
       httpOnly: true,
       secure: false,
-      maxAge:  4,
+    //  maxAge:  180000,
       expires: new Date('Monday, 18 January 2028')
     },
   }))
