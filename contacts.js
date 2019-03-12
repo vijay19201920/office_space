@@ -1,10 +1,27 @@
 var express = require('express');
 var passwordHash = require('password-hash');
-
+var multer  = require('multer');
 var router = express.Router();
 
 var connection = require('./db_connection.js');
 
+
+
+//upload path for the file avatar using as a middleware
+//multer is used for form type multipart/form-data for uploading the data on server
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'D:/node/office_space/office_space/office_space/uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+var upload = multer({ storage: storage })
+
+
+//get is mainly used for select data
 router.get('/', function (req, res) {
     console.log("hello");
     res.send('say hi');
@@ -21,7 +38,10 @@ router.get('/form', function (req, res) {
 
 });
 
-router.post('/form', function (req, res) {
+
+// post method is used for insert , edit data
+//delete method is used for deleting the data
+router.post('/form',upload.single('avatar'), function (req, res) {
 
     var hashedPassword;
     hashedPassword = passwordHash.generate(req.body.password);
